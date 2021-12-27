@@ -12,6 +12,7 @@ class Register extends Module {
         val Rd_byte_w_en = Input(UInt(4.W))
         val Rs_out = Output(UInt(32.W))
         val Rt_out = Output(UInt(32.W))
+        val register_for_peek = Output(Vec(32, UInt(32.W)))
     })
 
     val reg = RegInit(VecInit(Seq.fill(32){VecInit(Seq.fill(4){0.U(8.W)})}))
@@ -33,4 +34,7 @@ class Register extends Module {
         }
     }
 
+    for(i <- 0 to 31 by 1){
+        io.register_for_peek(i) := Cat(reg(i)(3), Cat(reg(i)(2), Cat(reg(i)(1), reg(i)(0))))
+    }
 }

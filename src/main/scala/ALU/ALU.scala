@@ -43,7 +43,7 @@ class ALU extends Module {
 
     val A_in_not = Mux(io.ALU_op(0), ~io.A_in, io.A_in)
     val tocount = Wire(Vec(32, Bool()))
-    val count = Wire(Vec(32, UInt(5.W)))
+    val count = Wire(Vec(32, UInt(6.W)))
     for(i <- 31 to 0 by -1){
         if(i==31) tocount(i) := (A_in_not(i)===0.U)
         else tocount(i) := tocount(i+1) & (A_in_not(i)===0.U)

@@ -18,7 +18,7 @@ class Shifter extends Module {
         io.out := io.in<<io.amount;
     } .elsewhen(io.operation === 1.U){
         io.out := io.in>>io.amount
-    } .elsewhen(io.operation === 2.U){
+    } .elsewhen(io.operation === 3.U){
         io.out := (io.in.asSInt()>>io.amount).asUInt()
     } .otherwise{
         io.out := (extended_in>>io.amount)(63, 32) | (extended_in>>io.amount)(31, 0)

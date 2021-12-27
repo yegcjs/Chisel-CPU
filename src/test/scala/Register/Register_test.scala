@@ -3,28 +3,30 @@
 package Register
 
 import chisel3._
+import chisel3.iotesters._
 import chisel3.tester._
 import org.scalatest.FreeSpec
 import chisel3.experimental.BundleLiterals._
+import chisel3.iotesters.PeekPokeTester
 
-class Register_test extends FreeSpec with ChiselScalatestTester {
+class Register_test(dut: Register) extends PeekPokeTester(dut) {
+  poke(dut.io.Rs_addr, 0.U)
+  poke(dut.io.Rt_addr, 3.U)
+  poke(dut.io.Rd_byte_w_en, 3.U)
+  poke(dut.io.Rd_addr, 3.U)
+  poke(dut.io.Rd_in, 1048575.U)
+  step(1)
+  expect(dut.io.Rs_out, 0.U)
+  expect(dut.io.Rt_out, 65535.U) 
+  poke(dut.io.Rd_byte_w_en, 15.U)
+  poke(dut.io.Rd_addr, 0.U)
+  poke(dut.io.Rd_addr, 12342.U)
+  step(1)
+  expect(dut.io.Rs_out, 0.U)
+  expect(dut.io.Rt_out,65535.U)
+  step(1)
+}
 
-  "Register test" in {
-    test(new Register()) { dut =>
-        dut.io.Rs_addr.poke(0.U)
-        dut.io.Rt_addr.poke(3.U)
-        dut.io.Rd_byte_w_en.poke(3.U)
-        dut.io.Rd_addr.poke(3.U)
-        dut.io.Rd_in.poke(1048575.U)
-        dut.clock.step(1)
-        dut.io.Rs_out.expect(0.U)
-        dut.io.Rt_out.expect(65535.U) 
-        dut.io.Rd_byte_w_en.poke(15.U)
-        dut.io.Rd_addr.poke(0.U)
-        dut.io.Rd_addr.poke(12342.U)
-        dut.clock.step(1)
-        dut.io.Rs_out.expect(0.U)
-        dut.io.Rt_out.expect(65535.U)
-    }
-  }
+object RegisterGen extends App{
+  chisel3.iotesters.Driver.execute(args, ()=>new Register) { c => new Register_test(c)}
 }
